@@ -1,10 +1,11 @@
-var app = angular.module('FlapperNews', ['ui.router']);
+var app = angular.module('FlapperNews', ['ui.router', 'textAngular']);
 
 app.controller('MainCtrl', [
   '$scope',
   'posts',
   'auth',
   function ($scope, posts, auth) {
+
     $scope.posts = posts.posts;
     $scope.isLoggedIn = auth.isLoggedIn;
     $scope.addPost = function () {
@@ -12,10 +13,12 @@ app.controller('MainCtrl', [
         return;
       posts.create({
         title: $scope.title,
-        link: $scope.link
+        link: $scope.link,
+        description: $scope.description
       });
       $scope.title = '';
       $scope.link = '';
+      $scope.description = '';
     };
 
     $scope.incrementUpvotes = function (post) {
@@ -83,6 +86,7 @@ app.controller('PostsCtrl', [
   'post',
   'auth',
   function ($scope, posts, post, auth) {
+
     $scope.post = post;
     $scope.isLoggedIn = auth.isLoggedIn;
     $scope.addComment = function () {
