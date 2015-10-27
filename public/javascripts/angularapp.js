@@ -136,7 +136,8 @@ app.factory('posts', ['$http', 'auth', function ($http, auth) {
         Authorization: 'Bearer ' + auth.getToken()
       }
     }).success(function (data) {
-      post.upvotes += 1;
+      if (data)
+        post.upvotes += 1;
     });
   };
 
@@ -161,7 +162,8 @@ app.factory('posts', ['$http', 'auth', function ($http, auth) {
       }
     })
       .success(function (data) {
-        comment.upvotes += 1;
+        if (data)
+          comment.upvotes += 1;
       });
   };
 

@@ -7,16 +7,16 @@ var passport = require('passport');
 var jwt = require('express-jwt');
 var User = mongoose.model('User');
 
-var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
+var auth = jwt({ secret: 'SECRET', userProperty: 'payload' });
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   res.render('index');
 });
 
 // Posts
-router.get('/posts', function(req, res, next) {
-  Post.find(function(err, posts) {
+router.get('/posts', function (req, res, next) {
+  Post.find(function (err, posts) {
     if (err) {
       next(err);
     }
@@ -24,10 +24,10 @@ router.get('/posts', function(req, res, next) {
   });
 });
 
-router.post('/posts', auth, function(req, res, next) {
+router.post('/posts', auth, function (req, res, next) {
   var post = new Post(req.body);
   post.author = req.payload.username;
-  post.save(function(err, p) {
+  post.save(function (err, p) {
     if (err)
       next(err);
 
@@ -35,10 +35,10 @@ router.post('/posts', auth, function(req, res, next) {
   })
 });
 
-router.param('post', function(req, res, next, id) {
+router.param('post', function (req, res, next, id) {
   var query = Post.findById(id);
 
-  query.exec(function(err, post) {
+  query.exec(function (err, post) {
     if (err)
       return next(err);
     if (!post)
@@ -49,10 +49,10 @@ router.param('post', function(req, res, next, id) {
   });
 });
 
-router.param('comment', function(req, res, next, id) {
+router.param('comment', function (req, res, next, id) {
   var query = Comment.findById(id);
 
-  query.exec(function(err, comment) {
+  query.exec(function (err, comment) {
     if (err)
       return next(err);
     if (!comment)
@@ -64,50 +64,65 @@ router.param('comment', function(req, res, next, id) {
 });
 
 
-router.get('/posts/:post', function(req, res) {
-  req.post.populate('comments', function(err, post) {
+router.get('/posts/:post', function (req, res) {
+  req.post.populate('comments', function (err, post) {
     if (err) { return next(err); }
 
     res.json(post);
   });
 });
 
-router.put('/posts/:post/upvote',auth, function(req, res, next) {
-  req.post.upvote(function(err, post){
-    if (err) { return next(err); }
+router.put('/posts/:post/upvote', auth, function (req, res, next) {
+  var query = User.findById(req.payload._id);
+  query.exec(function (err, user) {
+    if (err)
+      return next(err);
+    if (!user)
+      return next(new Error('can\'t find comment'));
+    user.upvotePost(req.post, function (err, post) {
+      if (err) { return next(err); }
 
-    res.json(post);
+      res.json(post);
+    });
   });
 });
 
-router.post('/posts/:post/comments',auth, function(req, res, next) {
+router.post('/posts/:post/comments', auth, function (req, res, next) {
   var comment = new Comment(req.body);
   comment.post = req.post;
   comment.author = req.payload.username;
 
-  comment.save(function(err, comment){
-    if(err){ return next(err); }
+  comment.save(function (err, comment) {
+    if (err) { return next(err); }
 
     req.post.comments.push(comment);
-    req.post.save(function(err, post) {
-      if(err){ return next(err); }
+    req.post.save(function (err, post) {
+      if (err) { return next(err); }
 
       res.json(comment);
     });
   });
 });
 
-router.put('/posts/:post/comments/:comment/upvote',auth, function(req, res, next) {
-  req.comment.upvote(function(err, comment){
-    if (err) { return next(err); }
+router.put('/posts/:post/comments/:comment/upvote', auth, function (req, res, next) {
 
-    res.json(comment);
+  var query = User.findById(req.payload._id);
+  query.exec(function (err, user) {
+    if (err)
+      return next(err);
+    if (!user)
+      return next(new Error('can\'t find comment'));
+    user.upvoteComment(req.comment, function (err, comment) {
+      if (err) { return next(err); }
+
+      res.json(comment);
+    });
   });
 });
 
-router.post('/register', function(req, res, next){
-  if(!req.body.username || !req.body.password){
-    return res.status(400).json({message: 'Please fill out all fields'});
+router.post('/register', function (req, res, next) {
+  if (!req.body.username || !req.body.password) {
+    return res.status(400).json({ message: 'Please fill out all fields' });
   }
 
   var user = new User();
@@ -116,23 +131,23 @@ router.post('/register', function(req, res, next){
 
   user.setPassword(req.body.password)
 
-  user.save(function (err){
-    if(err){ return next(err); }
+  user.save(function (err) {
+    if (err) { return next(err); }
 
-    return res.json({token: user.generateJWT()})
+    return res.json({ token: user.generateJWT() })
   });
 });
 
-router.post('/login', function(req, res, next){
-  if(!req.body.username || !req.body.password){
-    return res.status(400).json({message: 'Please fill out all fields'});
+router.post('/login', function (req, res, next) {
+  if (!req.body.username || !req.body.password) {
+    return res.status(400).json({ message: 'Please fill out all fields' });
   }
 
-  passport.authenticate('local', function(err, user, info){
-    if(err){ return next(err); }
+  passport.authenticate('local', function (err, user, info) {
+    if (err) { return next(err); }
 
-    if(user){
-      return res.json({token: user.generateJWT()});
+    if (user) {
+      return res.json({ token: user.generateJWT() });
     } else {
       return res.status(401).json(info);
     }
