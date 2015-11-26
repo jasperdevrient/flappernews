@@ -1,0 +1,41 @@
+<div class="page-header">
+      <h1>Flapper News</h1>
+    </div>
+
+    <div ng-repeat="post in posts| orderBy: '-upvotes'">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+            <span ng-click="incrementUpvotes(post)" class="glyphicon glyphicon-thumbs-up"></span> {{post.upvotes}}
+            <span style="margin-left: 10px; font-size: 20px">
+                          <a href="{{post.link}}" target="_blank" ng-show="post.link">{{post.title}}</a>
+                        <span ng-show="post.author">
+                          posted by <a>{{post.author}}</a> |
+                        </span>
+      <span ng-hide="post.link"> {{post.title}} </span>
+        </span>
+      </div><div class="panel-body">
+      <div ng-bind-html="post.description"/>
+      <span><a href="#/posts/{{post._id}}"> Readmore </a></span>
+
+      </div>
+      </div>
+
+    </div>
+
+    <form ng-submit="addPost()" ng-show="isLoggedIn()" style="margin-top: 20px">
+      <div class="form-group">
+        <input class="form-control" placeholder="Title" type="text" ng-model="title" />
+      </div>
+      <div class="form-group">
+        <input class="form-control" placeholder="Link" type="text" ng-model="link" />
+      </div>
+      <div class="form-group">
+        <div text-angular ng-model="description" placeholder="Description" ></div>
+      </div>
+      <div class="form-group">
+        <input class="form-control" type="submit" value="Post" />
+      </div>
+    </form>
+    <div ng-hide="isLoggedIn()">
+      <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can add a post.</h3>
+    </div>

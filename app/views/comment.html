@@ -1,0 +1,35 @@
+<div class="panel panel-default">
+	<div class="panel-heading">
+		{{comment.upvotes}} - <span>{{comment.author}}</span>
+	</div>
+
+
+
+	<div class="panel-body">
+		<div ng-bind-html="comment.body" />
+
+		<div class="comment-meta">
+			<span ng-hide="visible" class="btn btn-default" ng-click="showCommentDialog()">Reply</span>
+			<div ng-show="visible" id="c{{comment._id}}">
+				<form ng-submit="addCommentFix()" style="margin-top:30px;">
+					<div class="form-group">
+						<textarea ng-model="body" placeholder="Add a new Comment" class="form-control">
+						</textarea>
+					</div>
+					<div class="form-group">
+						<button class="btn btn-primary" type="submit">Add comment</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div ng-repeat="c in comment.comments">
+			<comment comment="c" increase-upvotes="increaseUpvotes" add-comment="addCommentToComment" />
+		</div>
+
+
+
+	</div>
+
+
+</div>

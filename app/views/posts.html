@@ -1,0 +1,26 @@
+<div class="page-header">
+    <h3>
+                    <a href="{{post.link}}" target="_blank" ng-show="post.link">{{post.title}}</a>
+                    <span ng-hide="post.link"> {{post.title}} </span> By <a>{{post.author}}</a>
+                </h3>
+    <div ng-bind-html="post.description" />
+</div>
+
+<form ng-submit="addComment()" ng-show="isLoggedIn()" style="margin-top:30px;">
+    <div class="form-group">
+        <textarea ng-model="body" placeholder="Add a new Comment" class="form-control">
+        </textarea>
+    </div>
+    <div class="form-group">
+        <button class="btn btn-primary" type="submit">Add comment</button>
+    </div>
+</form>
+<div ng-repeat="comment in post.comments| orderBy:'-upvotes'">
+    <comment comment="comment" increase-upvotes="increaseUpvotes" add-comment="addCommentToComment" />
+</div>
+
+  
+
+<div ng-hide="isLoggedIn()">
+    <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can add a post.</h3>
+</div>

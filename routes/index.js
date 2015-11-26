@@ -120,6 +120,17 @@ router.put('/posts/:post/comments/:comment/upvote', auth, function (req, res, ne
   });
 });
 
+router.post('/posts/:post/comments/:comment', auth, function (req, res, next) {
+  var comment = new Comment(req.body);
+  var target = req.comment;
+  comment.author = req.payload.username;
+
+  target.addComment(comment, function (err, comment) {
+    if (err) { return next(err); }
+    res.json(comment);
+  });
+});
+
 router.post('/register', function (req, res, next) {
   if (!req.body.username || !req.body.password) {
     return res.status(400).json({ message: 'Please fill out all fields' });
