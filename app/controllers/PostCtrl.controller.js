@@ -6,7 +6,7 @@
 			'posts',
 			'post',
 			'auth',
-			function ($scope, posts, post, auth) {
+			function ($scope, posts, post, auth,$route) {
 
 				$scope.post = post;
 				$scope.isLoggedIn = auth.isLoggedIn;
@@ -33,11 +33,12 @@
 						body: body
 					}).success(function (newC) {
 						comment.comments.push(newC);
+						console.log(newC, comment,post);
 					});
 				};
 
-				$scope.incrementUpvotes = function (comment) {
-					posts.upvoteComment(post, comment);
+				$scope.incrementUpvotes = function (comment,cb) {
+					posts.upvoteComment(post, comment,cb);
 				};
 			}
 		]);

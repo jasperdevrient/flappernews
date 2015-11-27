@@ -1,4 +1,31 @@
+.media .media{
+ margin-left: 3em;
+}
+.media-body {
+  padding: 10px;
+    border-left: solid gray 1px;
+ 
+}
+.media-left {
+  width: 1cm;
+}
+.media-body a.pointer {
+  visibility: hidden;
+}
+.media-heading {
+  font-weight: bold;
+}
 
+.comment-meta {
+  padding: 8px;
+}
+
+.media-body:hover a.pointer {
+  visibility: visible;
+}
+.pointer:hover{
+  cursor: pointer;
+}
 
     .glyphicon-thumbs-up {
       cursor: pointer;
@@ -11,4 +38,8 @@
   overflow: auto;
   font-family: inherit;
   font-size: 100%;
+}
+
+.glyphicon-star {
+  margin-right: 5px;
 }

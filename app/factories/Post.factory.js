@@ -55,15 +55,18 @@
 				});
 			};
 
-			postFactory.upvoteComment = function (post, comment) {
+			postFactory.upvoteComment = function (post, comment,cb) {
 				return $http.put('/posts/' + post._id + '/comments/' + comment._id + '/upvote', null, {
 					headers: {
 						Authorization: 'Bearer ' + auth.getToken()
 					}
 				})
 					.success(function (data) {
-						if (data)
+						if (data) {
 							comment.upvotes += 1;
+							
+							cb();
+						}
 					});
 			};
 

@@ -1,4 +1,4 @@
-var app = angular.module('FlapperNews', ['ui.router', 'textAngular']);
+var app = angular.module('FlapperNews', ['ui.router', 'textAngular','angularMoment']);
 
 
 

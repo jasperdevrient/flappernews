@@ -15,9 +15,9 @@
         <button class="btn btn-primary" type="submit">Add comment</button>
     </div>
 </form>
-<div ng-repeat="comment in post.comments| orderBy:'-upvotes'">
-    <comment comment="comment" increase-upvotes="increaseUpvotes" add-comment="addCommentToComment" />
-</div>
+<ul ng-repeat="comment in post.comments| orderBy:'-upvotes'" class="media-list">
+    <comment comment="comment" increase-upvotes="incrementUpvotes" add-comment="addCommentToComment" />
+</ul>
 
   
 

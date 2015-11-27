@@ -1,15 +1,20 @@
-<div class="panel panel-default">
-	<div class="panel-heading">
-		{{comment.upvotes}} - <span>{{comment.author}}</span>
+<li class="media">
+	<div class="media-left">
+		</div>
+	
+
+
+
+	<div class="media-body">
+		<div class="media-heading">
+			<span class="label  label-default pointer" ng-hide="liked" ng-click="like()"><span class="glyphicon glyphicon-star" />{{comment.upvotes}}</span>
+			<span class="label  label-success" ng-show="liked"><span class="glyphicon glyphicon-star" />{{comment.upvotes}}</span>
+		  <span>{{comment.author}}</span> <span am-time-ago="comment.createdAt"></span>
 	</div>
-
-
-
-	<div class="panel-body">
 		<div ng-bind-html="comment.body" />
 
 		<div class="comment-meta">
-			<span ng-hide="visible" class="btn btn-default" ng-click="showCommentDialog()">Reply</span>
+			<a ng-hide="visible" ng-click="showCommentDialog()" class="pointer">Reply</a>
 			<div ng-show="visible" id="c{{comment._id}}">
 				<form ng-submit="addCommentFix()" style="margin-top:30px;">
 					<div class="form-group">
@@ -18,13 +23,14 @@
 					</div>
 					<div class="form-group">
 						<button class="btn btn-primary" type="submit">Add comment</button>
+						<button class="btn btn-danger" type="reset" ng-click="hide()">Cancel</button>
 					</div>
 				</form>
 			</div>
 		</div>
 
-		<div ng-repeat="c in comment.comments">
-			<comment comment="c" increase-upvotes="increaseUpvotes" add-comment="addCommentToComment" />
+		<div ng-repeat="c in comment.comments| orderBy:'-upvotes'">
+			<comment comment="c" increase-upvotes="increaseUpvotes" add-comment="addComment" />
 		</div>
 
 
@@ -32,4 +38,4 @@
 	</div>
 
 
-</div>
+</li>

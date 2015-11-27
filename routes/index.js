@@ -64,12 +64,49 @@ router.param('comment', function (req, res, next, id) {
 });
 
 
-router.get('/posts/:post', function (req, res) {
+router.get('/posts/:post', function (req, res, next) {
+  var npost = {"_id":req.post._id,
+  "title": req.post.title,
+  "description":req.post.description,
+  "link":req.post.link,
+  "author":req.post.author,
+  "__v":req.post.__v,
+  "comments":[],
+  "upvotes":req.post.upvotes,
+  "createdAt":req.post.createdAt};
+    
+
+  
   req.post.populate('comments', function (err, post) {
     if (err) { return next(err); }
+    var toFetch = 0;
+    var populateNestedComments = function (comment, arr) {
+      comment = comment.toObject();
+          arr.push(comment);
+        
+      var comments = comment.comments.slice(0);
+      comment.comments = [];
+      comments.forEach(function(commentId) {
+        toFetch++;
+        var protectedComment = comment;
+        var query = Comment.findById(commentId);
+        query.exec().then(function(c) {
+            populateNestedComments(c, comment.comments);
+        
+          toFetch--;
+         
+          if (toFetch <= 0) {
+            res.json(npost);
+          }
+        });
+      });
+    };
 
-    res.json(post);
-  });
+    post.comments
+    .forEach(function(elem) {populateNestedComments(elem, npost.comments) });
+   
+  
+   });
 });
 
 router.put('/posts/:post/upvote', auth, function (req, res, next) {
@@ -125,9 +162,21 @@ router.post('/posts/:post/comments/:comment', auth, function (req, res, next) {
   var target = req.comment;
   comment.author = req.payload.username;
 
-  target.addComment(comment, function (err, comment) {
+  comment.save(function (err, c) {
     if (err) { return next(err); }
-    res.json(comment);
+    target.addComment(c, function (err, cc) {
+      if (err) { return next(err); }
+      res.json(comment);
+    });
+  });
+});
+
+router.get('/userinfo', auth, function(req,res,next) {
+  var query = User.findById(req.payload._id);
+  query.exec(function (err, user) {
+    if (err)
+      return next(err);
+      res.json(comment);
   });
 });
 

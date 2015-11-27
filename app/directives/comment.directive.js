@@ -7,7 +7,7 @@
 			transclude: true,
 			scope: {
 				'comment': '=',
-				'increaseUpvotes': '=',
+				'increaseUpvotes': '&',
 				'addComment': '&'
 			},
 			templateUrl: 'views/comment.html',
@@ -19,14 +19,35 @@
                 // a 'pre'- and 'post'-link function.
 				scope.visible = false;
 				scope.body ='';
+				scope.liked = false;
 				scope.showCommentDialog = function() {
 					scope.visible = true;
 				};
 				scope.addCommentFix = function() {
-					
 					scope.visible = false;
-					scope.addComment()(scope.comment,scope.body);
+					var func = scope.addComment;
+					
+					while (func.length !== 2)
+						func = func();
+					func(scope.comment,scope.body);
+					scope.body = '';
+					
+				
 				};
+				
+				scope.like = function() {
+					var func = scope.increaseUpvotes;
+					while (func.length !== 2)
+						func = func();
+						
+					func(scope.comment, function() {
+						scope.liked = true;
+					});
+				}
+				
+				scope.hide = function() {
+					scope.visible = false;
+				}
             });
         }
 		}
