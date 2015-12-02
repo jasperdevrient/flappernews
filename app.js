@@ -13,7 +13,14 @@ require('./models');
 require('./config/passport');
 
 // init database
-mongoose.connect(MONGO_DB || 'mongodb://localhost/News');
+var uristring = MONGO_DB || 'mongodb://localhost/News';
+mongoose.connect(uristring, function (err, res) {
+      if (err) {
+      console.log ('ERROR connecting to: ' + uristring + '. ' + err);
+      } else {
+      console.log ('Succeeded connected to: ' + uristring);
+      }
+    });
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
