@@ -13,7 +13,7 @@ require('./models');
 require('./config/passport');
 
 // init database
-mongoose.connect('mongodb://localhost/News');
+mongoose.connect(MONGO_DB || 'mongodb://localhost/News');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
